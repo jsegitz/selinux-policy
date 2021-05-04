@@ -121,6 +121,9 @@ ifdef(`distro_redhat',`
 /usr/(.*/)?java/.+\.jsa			--	gen_context(system_u:object_r:lib_t,s0)
 
 /usr/(.*/)?lib(/.*)?				gen_context(system_u:object_r:lib_t,s0)
+ifdef(`distro_suse',`
+/usr/lib/libreoffice/program/resource.*	--	gen_context(system_u:object_r:lib_t,s0)
+')
 
 /usr/(.*/)?lib(/.*)?/ld-[^/]*\.so(\.[^/]*)* gen_context(system_u:object_r:ld_so_t,s0)
 
