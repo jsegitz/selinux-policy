@@ -98,3 +98,7 @@ ifdef(`distro_redhat',`
 /var/empty/sshd/etc/localtime -- gen_context(system_u:object_r:locale_t,s0)
 /var/spool/postfix/etc/localtime -- gen_context(system_u:object_r:locale_t,s0)
 ')
+
+ifdef(`distro_suse', `
+/var/lib/ca-certificates(/.*)? gen_context(system_u:object_r:cert_t,s0)
+')
