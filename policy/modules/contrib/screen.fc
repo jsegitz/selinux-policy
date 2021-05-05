@@ -9,6 +9,6 @@ HOME_DIR/\.tmux\.conf	--	gen_context(system_u:object_r:screen_home_t,s0)
 
 /var/run/screen(/.*)?			gen_context(system_u:object_r:screen_var_run_t,s0)
 ifdef(`distro_suse', `
-var/run/uscreens(/.*)?'                gen_context(system_u:object_r:screen_var_run_t,s0)
+/var/run/uscreens(/.*)?			gen_context(system_u:object_r:screen_var_run_t,s0)
 ')
 /var/run/tmux(/.*)?			gen_context(system_u:object_r:screen_var_run_t,s0)
