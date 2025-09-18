@@ -129,6 +129,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+    ssh_domtrans_keygen(cloud_init_t)
+')
+
+optional_policy(`
     networkmanager_dbus_chat(cloud_init_t)
 ')
 
