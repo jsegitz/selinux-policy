@@ -42,6 +42,7 @@ logging_log_file(mdadm_log_t)
 
 allow mdadm_t self:capability { dac_read_search dac_override ipc_lock sys_admin sys_ptrace };
 dontaudit mdadm_t self:capability { sys_tty_config };
+allow mdadm_t self:capability2 { bpf };
 allow mdadm_t self:cap_userns { sys_ptrace };
 allow mdadm_t self:process { getsched setsched sigchld sigkill sigstop signull signal };
 allow mdadm_t self:fifo_file rw_fifo_file_perms;
@@ -115,9 +116,12 @@ fs_dontaudit_list_tmpfs(mdadm_t)
 fs_manage_cgroup_files(mdadm_t)
 fs_read_efivarfs_files(mdadm_t)
 fs_read_tmpfs_files(mdadm_t)
+fs_search_all(mdadm_t)
 
 mls_file_read_all_levels(mdadm_t)
 mls_file_write_all_levels(mdadm_t)
+
+modutils_domtrans_kmod(mdadm_t)
 
 storage_dev_filetrans_fixed_disk(mdadm_t)
 storage_manage_fixed_disk(mdadm_t)

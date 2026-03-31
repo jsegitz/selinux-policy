@@ -125,6 +125,8 @@ interface(`auth_login_pgm_domain',`
 	typeattribute $1 polydomain;
 	typeattribute $1 login_pgm;
 
+	corecmd_exec_bin($1)
+
 	domain_subj_id_change_exemption($1)
 	domain_role_change_exemption($1)
 	domain_obj_id_change_exemption($1)
@@ -486,6 +488,23 @@ interface(`auth_domtrans_chkpwd',`
 	domtrans_pattern($1, chkpwd_exec_t, chkpwd_t)
 	dontaudit $1 shadow_t:file { getattr read };
 	auth_domtrans_upd_passwd($1)
+')
+
+########################################
+## <summary>
+##	Allow caller to transition to chkpwd_t with NoNewPrivileges
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition.
+##	</summary>
+## </param>
+#
+interface(`auth_nnp_domtrans_chkpwd',`
+	gen_require(`
+		type chkpwd_t;
+	')
+	allow $1 chkpwd_t:process2 nnp_transition;
 ')
 
 ########################################
@@ -2596,6 +2615,24 @@ interface(`auth_login_pgm_sigchld',`
 	')
 
 	allow $1 login_pgm:process sigchld;
+')
+
+########################################
+## <summary>
+##	Send a SIGNULL signal to login programs.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`auth_login_pgm_signull',`
+	gen_require(`
+		attribute login_pgm;
+	')
+
+	allow $1 login_pgm:process signull;
 ')
 
 ########################################

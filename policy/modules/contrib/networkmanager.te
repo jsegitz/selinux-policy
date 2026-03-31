@@ -204,6 +204,7 @@ dev_getattr_all_chr_files(NetworkManager_t)
 dev_rw_wireless(NetworkManager_t)
 
 fs_getattr_all_fs(NetworkManager_t)
+fs_list_bpf_dirs(NetworkManager_t)
 fs_search_auto_mountpoints(NetworkManager_t)
 fs_read_nsfs_files(NetworkManager_t)
 
@@ -708,6 +709,7 @@ optional_policy(`
 	systemd_status_systemd_services(NetworkManager_dispatcher_ddclient_t)
 	systemd_start_systemd_services(NetworkManager_dispatcher_sendmail_t)
 	systemd_status_systemd_services(NetworkManager_dispatcher_sendmail_t)
+	systemd_start_systemd_services(NetworkManager_dispatcher_nvme_t)
 ')
 
 optional_policy(`

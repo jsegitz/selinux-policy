@@ -237,7 +237,7 @@ optional_policy(`
 # NFSD local policy
 #
 
-allow nfsd_t self:capability { dac_read_search dac_override sys_admin sys_chroot sys_rawio sys_resource };
+allow nfsd_t self:capability { dac_read_search dac_override setgid setuid sys_admin sys_chroot sys_rawio sys_resource };
 
 allow nfsd_t self:process { setcap };
 
@@ -476,4 +476,8 @@ optional_policy(`
 
 optional_policy(`
 	systemd_homed_stream_connect(nfsidmap_t)
+')
+
+optional_policy(`
+	virt_search_lib(nfsidmap_t)
 ')

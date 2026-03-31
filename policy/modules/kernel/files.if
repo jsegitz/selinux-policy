@@ -1291,6 +1291,7 @@ interface(`files_search_base_file_types',`
 	')
 
 	allow $1 base_file_type:dir search_dir_perms;
+	allow $1 base_file_type:lnk_file read_lnk_file_perms;
 ')
 
 ########################################
@@ -3579,7 +3580,7 @@ interface(`files_delete_boot_symlinks',`
 		type boot_t;
 	')
 
-	delete_files_pattern($1, boot_t, boot_t)
+	delete_lnk_files_pattern($1, boot_t, boot_t)
 ')
 
 ########################################
@@ -6846,6 +6847,24 @@ interface(`files_watch_with_perm_generic_tmp_dirs',`
 	allow $1 tmp_t:dir watch_with_perm_dir_perms;
 ')
 
+##########################################
+## <summary>
+## 	Mounton generic tmp directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access
+##	</summary>
+## </param>
+#
+interface(`files_mounton_generic_tmp_dirs',`
+	gen_require(`
+		type tmp_t;
+	')
+
+	allow $1 tmp_t:dir mounton;
+')
+
 ########################################
 ## <summary>
 ##	Allow shared library text relocations in tmp files.
@@ -10056,7 +10075,7 @@ interface(`files_polyinstantiate_all',`
 		# namespace.init
 		files_search_tmp($1)
 		files_search_home($1)
-		corecmd_exec_bin($1)
+		#corecmd_exec_bin($1)
 		seutil_domtrans_setfiles($1)
 	')
 ')

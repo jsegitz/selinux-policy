@@ -961,7 +961,7 @@ optional_policy(`
 #
 # virtlogd local policy
 #
-allow virtlogd_t self:capability kill;
+allow virtlogd_t self:capability { dac_override kill };
 allow virtlogd_t virt_image_t:dir search_dir_perms;
 allow virtlogd_t svirt_t:process signal;
 
@@ -1257,6 +1257,7 @@ optional_policy(`
 ')
 
 optional_policy(`
+	userdom_read_home_certs_tunable(virt_use_pcscd, virt_domain)
 	tunable_policy(`virt_use_pcscd',`
 		pcscd_stream_connect(virt_domain)
 	')
@@ -2023,7 +2024,8 @@ optional_policy(`
 #
 # virtnodedevd local policy
 #
-allow virtnodedevd_t self:capability { net_admin sys_admin };
+allow virtnodedevd_t self:capability { dac_read_search net_admin sys_admin };
+allow virtnodedevd_t self:capability2 perfmon;
 allow virtnodedevd_t self:netlink_generic_socket create_socket_perms;
 allow virtnodedevd_t self:process { setsched };
 
@@ -2158,12 +2160,12 @@ allow virtqemud_t self:udp_socket { connect create_socket_perms };
 allow virtqemud_t qemu_var_run_t:{ dir file sock_file } relabelfrom;
 
 allow virtqemud_t svirt_t:netlink_route_socket create_netlink_socket_perms;
-allow virtqemud_t svirt_t:process { getattr getrlimit setrlimit setsched signal signull transition };
+allow virtqemud_t svirt_t:process { getattr getrlimit getsched setrlimit setsched signal signull transition };
 allow virtqemud_t svirt_t:tcp_socket create_stream_socket_perms;
 allow virtqemud_t svirt_t:udp_socket create_socket_perms;
 allow virtqemud_t svirt_t:unix_stream_socket { connectto create_stream_socket_perms };
 allow virtqemud_t svirt_socket_t:unix_stream_socket connectto;
-allow virtqemud_t svirt_tcg_t:process { getrlimit getsched setsched signal signull transition };
+allow virtqemud_t svirt_tcg_t:process { getrlimit getsched setsched sigkill signal signull transition };
 allow virtqemud_t svirt_tcg_t:unix_stream_socket { connectto create_stream_socket_perms };
 
 allow virtqemud_t svirt_devpts_t:chr_file open;
@@ -2265,7 +2267,8 @@ dev_delete_urand(virtqemud_t)
 dev_getattr_fs(virtqemud_t)
 dev_read_cpuid(virtqemud_t)
 dev_rw_sysfs(virtqemud_t)
-dev_rw_inherited_dri(virtqemud_t)
+dev_rw_dri(virtqemud_t)
+dev_setattr_dri_dev(virtqemud_t)
 dev_read_urand(virtqemud_t)
 dev_rw_sgx_vepc(virtqemud_t)
 dev_rw_vfio_dev(virtqemud_t)
@@ -2273,7 +2276,7 @@ dev_relabel_all_dev_nodes(virtqemud_t)
 dev_rw_input_dev(virtqemud_t)
 dev_rw_kvm(virtqemud_t)
 dev_rw_lvm_control(virtqemud_t)
-dev_rw_vhost(virtqemud_t)
+dev_rw_map_vhost(virtqemud_t)
 dev_rw_sev(virtqemud_t)
 dev_setattr_input_dev(virtqemud_t)
 dev_setattr_sev(virtqemud_t)

@@ -37,12 +37,15 @@ tunable_policy(`deny_execmem',`',`
 allow thumb_t self:fifo_file manage_fifo_file_perms;
 allow thumb_t self:unix_stream_socket create_stream_socket_perms;
 allow thumb_t self:unix_dgram_socket create_socket_perms;
-allow thumb_t self:netlink_route_socket r_netlink_socket_perms;
+allow thumb_t self:netlink_route_socket rw_netlink_socket_perms;
 allow thumb_t self:netlink_kobject_uevent_socket create_socket_perms;
 allow thumb_t self:udp_socket create_socket_perms;
 allow thumb_t self:tcp_socket create_socket_perms;
 allow thumb_t self:shm create_shm_perms;
 allow thumb_t self:sem create_sem_perms;
+allow thumb_t self:cap_userns { net_admin setpcap sys_admin sys_ptrace };
+allow thumb_t self:process setcap;
+allow thumb_t self:user_namespace create;
 
 manage_dirs_pattern(thumb_t, thumb_home_t, thumb_home_t)
 manage_files_pattern(thumb_t, thumb_home_t, thumb_home_t)
@@ -62,8 +65,10 @@ userdom_user_tmp_filetrans(thumb_t, thumb_tmp_t, { file dir sock_file })
 
 manage_dirs_pattern(thumb_t, thumb_tmpfs_t, thumb_tmpfs_t)
 manage_files_pattern(thumb_t, thumb_tmpfs_t, thumb_tmpfs_t)
-fs_tmpfs_filetrans(thumb_t, thumb_tmpfs_t, { dir file })
-allow thumb_t thumb_tmpfs_t:file execute;
+create_lnk_files_pattern(thumb_t, thumb_tmpfs_t, thumb_tmpfs_t)
+fs_tmpfs_filetrans(thumb_t, thumb_tmpfs_t, { dir file lnk_file })
+allow thumb_t thumb_tmpfs_t:dir mounton;
+allow thumb_t thumb_tmpfs_t:file { execute mounton };
 
 can_exec(thumb_t, thumb_exec_t)
 
@@ -91,8 +96,10 @@ domain_dontaudit_read_all_domains_state(thumb_t)
 
 files_read_non_security_files(thumb_t)
 files_map_non_security_files(thumb_t)
+files_mounton_rootfs(thumb_t)
 files_watch_etc_dirs(thumb_t)
 files_watch_usr_dirs(thumb_t)
+files_mounton_generic_tmp_dirs(thumb_t)
 
 fs_getattr_all_fs(thumb_t)
 fs_read_dos_files(thumb_t)
@@ -100,6 +107,9 @@ fs_rw_inherited_tmpfs_files(thumb_t)
 fs_map_dos_files(thumb_t)
 fs_mmap_removable_files(thumb_t)
 fs_dontaudit_getattr_nsfs_files(thumb_t)
+fs_mounton_tmpfs(thumb_t)
+fs_all_mount_fs_perms_xattr_fs(thumb_t)
+fs_all_mount_fs_perms_tmpfs(thumb_t)
 
 auth_read_passwd(thumb_t)
 
@@ -108,6 +118,7 @@ tunable_policy(`selinuxuser_execmod',`
 ')
 
 init_append_stream_sockets(thumb_t)
+init_stream_connectto(thumb_t)
 
 libs_dontaudit_setattr_lib_dirs(thumb_t)
 
@@ -125,6 +136,7 @@ sysnet_read_config(thumb_t)
 
 
 term_dontaudit_use_unallocated_ttys(thumb_t)
+term_mount_pty_fs(thumb_t)
 
 userdom_dontaudit_setattr_user_tmp(thumb_t)
 userdom_read_user_tmp_files(thumb_t)
@@ -143,6 +155,10 @@ xserver_dontaudit_read_xdm_pid(thumb_t)
 xserver_dontaudit_xdm_tmp_dirs(thumb_t)
 xserver_stream_connect(thumb_t)
 xserver_use_user_fonts(thumb_t)
+
+optional_policy(`
+	abrt_stream_connect(thumb_t)
+')
 
 optional_policy(`
     bumblebee_stream_connect(thumb_t)
@@ -180,6 +196,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	miscfiles_mounton_fonts_cache_dirs(thumb_t)
+')
+
+optional_policy(`
 	nscd_dontaudit_write_sock_file(thumb_t)
 ')
 
@@ -198,4 +218,17 @@ tunable_policy(`nis_enabled',`
 
 optional_policy(`
     storage_getattr_fixed_disk_dev(thumb_t)
+')
+
+optional_policy(`
+	systemd_machined_stream_connect(thumb_t)
+	systemd_userdbd_stream_connect(thumb_t)
+')
+
+optional_policy(`
+	systemd_homed_stream_connect(thumb_t)
+')
+
+optional_policy(`
+	xserver_stream_connect_xdm(thumb_t)
 ')

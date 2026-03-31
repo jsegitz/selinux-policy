@@ -800,6 +800,7 @@ interface(`systemd_mounton_inhibit_dir',`
 interface(`systemd_logind_stream_connect',`
 	gen_require(`
 		type systemd_logind_t;
+		type systemd_logind_var_run_t;
 	')
 
 	allow $1 systemd_logind_t:unix_stream_socket connectto;
@@ -2422,6 +2423,25 @@ interface(`systemd_machined_manage_pid_files',`
 	manage_files_pattern($1, systemd_machined_var_run_t, systemd_machined_var_run_t)
 ')
 
+########################################
+## <summary>
+##	Create systemd-machined PID symlinks
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_machined_create_pid_lnk_files',`
+	gen_require(`
+		type systemd_machined_var_run_t;
+	')
+
+	files_search_pids($1)
+	create_lnk_files_pattern($1, systemd_machined_var_run_t, systemd_machined_var_run_t)
+')
+
 ######################################
 ## <summary>
 ##	List systemd-machined PID files.
@@ -2553,6 +2573,42 @@ interface(`systemd_machined_rw_devpts_chr_files',`
         ')
 
         rw_chr_files_pattern($1, devpts_t, systemd_machined_devpts_t)
+')
+
+########################################
+## <summary>
+##	Watch systemd-machined user pty.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_machined_watch_user_ptys',`
+	gen_require(`
+		type systemd_machined_devpts_t;
+	')
+
+	allow $1 systemd_machined_devpts_t:chr_file watch_chr_file_perms;
+')
+
+########################################
+## <summary>
+##	Watch_reads systemd-machined user pty.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_machined_watch_reads_user_ptys',`
+	gen_require(`
+		type systemd_machined_devpts_t;
+	')
+
+	allow $1 systemd_machined_devpts_t:chr_file watch_reads_chr_file_perms;
 ')
 
 ########################################
@@ -3300,4 +3356,23 @@ interface(`systemd_oomd_stream_connect',`
 	allow $1 systemd_oomd_t:unix_stream_socket connectto;
 	allow $1 systemd_oomd_var_run_t:sock_file write;
 	files_search_pids($1)
+')
+
+########################################
+## <summary>
+##	Create /run/varlink/registry symlinks
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`systemd_varlink_registry_create_lnk_files',`
+	gen_require(`
+		type systemd_varlink_registry_t;
+	')
+
+	files_search_pids($1)
+	create_lnk_files_pattern($1, systemd_varlink_registry_t, systemd_varlink_registry_t)
 ')

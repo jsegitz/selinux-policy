@@ -386,6 +386,24 @@ interface(`unconfined_dontaudit_rw_pipes',`
 
 ########################################
 ## <summary>
+##	Allow read and write unconfined domain stream.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain to not audit.
+##	</summary>
+## </param>
+#
+interface(`unconfined_rw_stream',`
+	gen_require(`
+		type unconfined_t;
+	')
+
+	allow $1 unconfined_t:unix_stream_socket { read write };
+')
+
+########################################
+## <summary>
 ##	Do not audit attempts to read and write
 ##	unconfined domain stream.
 ## </summary>
@@ -420,6 +438,25 @@ interface(`unconfined_stream_connect',`
 	')
 
 	allow $1 unconfined_t:unix_stream_socket connectto;
+')
+
+########################################
+## <summary>
+##	Read/write/other permissions from connected_socket_perms
+##	to unconfined domain tcp sockets.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`unconfined_connected_tcp_sockets',`
+	gen_require(`
+		type unconfined_t;
+	')
+
+	allow $1 unconfined_t:tcp_socket connected_socket_perms;
 ')
 
 ########################################

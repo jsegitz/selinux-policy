@@ -143,6 +143,10 @@ optional_policy(`
 ')
 
 optional_policy(`
+	auth_login_pgm_signull(logwatch_t)
+')
+
+optional_policy(`
 	bind_read_config(logwatch_t)
 	bind_read_zone(logwatch_t)
 ')
@@ -182,11 +186,16 @@ optional_policy(`
 ')
 
 optional_policy(`
+	rpm_domtrans(logwatch_t)
+')
+
+optional_policy(`
 	samba_read_log(logwatch_t)
 	samba_read_share_files(logwatch_t)
 ')
 
 optional_policy(`
+	sendmail_rw_unix_stream_sockets(logwatch_t)
 	sendmail_stream_connect(logwatch_t)
 ')
 
